@@ -1,6 +1,9 @@
 "use client";
-import { allTodoType } from "@/types/types";
 import { useState } from "react";
+import { allTodoType } from "@/types/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   const [todo, setTodo] = useState<string>("");
@@ -32,7 +35,7 @@ export default function Home() {
   function editTodo(index: number) {
     setIsEditing(true);
     setEditIndex(index);
-    setTodo(allTodos[index].name); 
+    setTodo(allTodos[index].name);
   }
 
   function updateTodo() {
@@ -47,33 +50,51 @@ export default function Home() {
   }
 
   return (
-    <>
-      <h1>Todo</h1>
-      <input
-        type="text"
-        onChange={(e) => setTodo(e.target.value)}
-        value={todo}
-      />
-      <button onClick={handleSubmit}>
-        {isEditing ? "Update" : "Add"}
-      </button>
-      <br />
-      <br />
-      <h3>All todos:</h3>
-      <br />
-      <p>
-        {allTodos.map(({ name }, index) => (
-          <b key={index}>
-            Todo: {name}
-            <br />
-            <button onClick={() => deleteTodo(index)}>Delete</button>
-            <br />
-            <button onClick={() => editTodo(index)}>Edit</button>
-            <br />
-            <br />
-          </b>
-        ))}
-      </p>
-    </>
+    <div className="flex flex-col items-center p-4 space-y-6">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <h1 className="text-center text-xl font-semibold">Todo</h1>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Input
+            placeholder="Enter your todo"
+            type="text"
+            onChange={(e) => setTodo(e.target.value)}
+            value={todo}
+            className="w-full"
+          />
+          <Button onClick={handleSubmit} className="w-full">
+            {isEditing ? "Update" : "Add"}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <h3 className="text-center text-lg font-medium">All Todos</h3>
+        </CardHeader>
+        <CardContent>
+          {allTodos.length > 0 ? (
+            <ul className="space-y-4">
+              {allTodos.map(({ name }, index) => (
+                <li key={index} className="flex items-center justify-between p-2 border rounded">
+                  <span>{name}</span>
+                  <div className="space-x-2">
+                    <Button variant="secondary" size="sm" onClick={() => editTodo(index)}>
+                      Edit
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => deleteTodo(index)}>
+                      Delete
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center text-gray-500">No todos yet</p>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
